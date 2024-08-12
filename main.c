@@ -31,7 +31,7 @@ int main(int argc,const char* argv[])
             case 5:break;
             case 6:break;
             case 7:break;
-            case 8:break;
+            case 8:readStudentInfo();break; //读取学生信息
             case 9:exit(1);   //退出系统
         }
     }

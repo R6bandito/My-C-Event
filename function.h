@@ -15,4 +15,6 @@ typedef struct Student{     //学生结构体
 
 
 void addStudentInfo();  //声明新增学生信息函数
+void readStudentInfo();     //声明从文件中读取学生信息函数
+
 #endif  //FUNC_H
