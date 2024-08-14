@@ -11,7 +11,7 @@ int main(int argc,const char* argv[])
     SetConsoleOutputCP(CP_UTF8);
     FILE *fp = fopen("Database.bin","wb");  //新建一个空数据库文件
     if(fp == NULL){     //检测文件是否创建成功。若失败则终止程序
-        printf("Something Wrong!\n");
+        perror("Something Wrong!\n");
         exit(FILE_CANT_CREATE);
     }
     fclose(fp);     //关闭文件
@@ -25,7 +25,7 @@ int main(int argc,const char* argv[])
         switch(press)
         {
             case 1:addStudentInfo();break;  //修改学生信息
-            case 2:break;
+            case 2:deleteStudentInfo();break; //删除学生信息
             case 3:break;
             case 4:break;
             case 5:break;
