@@ -25,10 +25,10 @@ int Do_MenuA() // 主菜单操作
         if (scanf("%d", &i) != 1)
         {
             printf("非数值型输入，请重试\n");
-            clearInputBuff();   //清空输入缓冲区
+            clearInputBuff(); // 清空输入缓冲区
             continue;
         }
-        else if(i<1 || i>9)
+        else if (i < 1 || i > 9)
         {
             printf("错误输入，请重试\n");
             continue;
@@ -38,3 +38,32 @@ int Do_MenuA() // 主菜单操作
     return i;
 }
 
+void Menu_B() // 菜单B
+{
+    printf("请输入要修改的部分\n");
+    printf("1.学生姓名\n");
+    printf("2.学生学号\n");
+    printf("3.学生三学科成绩\n");
+}
+
+int Do_MenuB() // 菜单B操作
+{
+    int i;
+    while (1)
+    {
+        if (scanf("%d", &i) != 1)
+        {
+            printf("非数值输入，请重试\n");
+            clearInputBuff();
+            continue;
+        }
+        if(i<1 || i>3)
+        {
+            printf("错误输入，请重试\n");
+            clearInputBuff();
+            continue;
+        }
+        break;
+    }
+    return i;
+}

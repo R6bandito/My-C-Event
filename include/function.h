@@ -17,5 +17,11 @@ typedef struct Student{     //学生结构体
 void addStudentInfo();  //声明新增学生信息函数
 void readStudentInfo();     //声明从文件中读取学生信息函数
 void deleteStudentInfo();   //声明删除学生信息函数
+void fixStudentInfo();  //声明修改学生信息函数
+void Delay_ms(unsigned int time);   //声明延时函数
+
+void fixName(int search_id); //声明修改姓名函数
+void fixId(int search_id);   //声明修改学号函数
+void fixMark(int search_id); //声明修改分数函数
 
 #endif  //FUNC_H
