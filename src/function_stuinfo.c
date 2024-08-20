@@ -216,6 +216,7 @@ void fixStudentInfo() // 修改学生信息
     Student stu;
     int search_id;
     int i;
+    char ch;
 
     FILE *fp = fopen("Database.bin", "rb+"); // 读写方式打开文件
     if (fp == NULL)
@@ -236,12 +237,15 @@ void fixStudentInfo() // 修改学生信息
 label:
     while (1)
     {
-        system("cls");  //清空界面
-        printf("请输入要修改的学生学号\n");
+        system("cls"); // 清空界面
+        printf("请输入要修改的学生学号(按E退出)\n");
         while (1)
         {
             if (scanf("%d", &search_id) != 1)
             {
+                char ch = getchar();
+                if (ch == 'E' || (ch == 'e'))
+                    return; // 检查用户输入E，并作出响应
                 printf("非数值型输入，请重试\n");
                 clearInputBuff();
                 continue;
@@ -255,39 +259,48 @@ label:
             break;
         }
 
-        while(fread(&stu,sizeof(Student),1,fp) == 1)    //检查用户所输入的学号是否有对应的学生
+        while (fread(&stu, sizeof(Student), 1, fp) == 1) // 检查用户所输入的学号是否有对应的学生
         {
-            if(search_id == stu.Id)
+            if (search_id == stu.Id)
             {
                 break;
             }
         }
-        if(stu.Id != search_id && feof(fp))
+        if (stu.Id != search_id && feof(fp))
         {
             printf("未找到该学生\n");
             Delay_ms(1000);
             goto label;
         }
-        rewind(fp);
+        rewind(fp); // 重置文件内部位置指示器至开头
 
         Menu_B();
         i = Do_MenuB();
-        switch(i)
+        switch (i)
         {
-            case 1:system("cls");fixName(search_id);break;
-            case 2:system("cls");fixId(search_id);break;
-            case 3:system("cls");fixMark(search_id);break;
+        case 1:
+            system("cls");
+            fixName(search_id);
+            break;
+        case 2:
+            system("cls");
+            fixId(search_id);
+            break;
+        case 3:
+            system("cls");
+            fixMark(search_id);
+            break;
         }
     }
 }
 
-void fixName(int search_id)  //修改姓名
+void fixName(int search_id) // 修改姓名
 {
     Student stu;
     char _name[20];
 
-    FILE *fpn = fopen("Database.bin","rb+");
-    if(fpn == NULL)
+    FILE *fpn = fopen("Database.bin", "rb+");
+    if (fpn == NULL)
     {
         perror("Error openning the file");
         return;
@@ -295,18 +308,18 @@ void fixName(int search_id)  //修改姓名
 
     printf("请输入新姓名\n");
     clearInputBuff();
-    stringInput(_name,sizeof(_name));   //输入功能函数
-    while(fread(&stu,sizeof(Student),1,fpn) == 1)
+    stringInput(_name, sizeof(_name)); // 输入功能函数
+    while (fread(&stu, sizeof(Student), 1, fpn) == 1)
     {
-        if(search_id != stu.Id)
+        if (search_id != stu.Id)
         {
             continue;
         }
-        if(search_id == stu.Id)
+        if (search_id == stu.Id)
         {
-            strcpy(stu.name,_name);
-            fseek(fpn,-sizeof(Student),SEEK_CUR);    //将指针重新指向上一个区块数据，准备复写
-            fwrite(&stu,sizeof(Student),1,fpn);  //复写数据
+            strcpy(stu.name, _name);
+            fseek(fpn, -sizeof(Student), SEEK_CUR); // 将指针重新指向上一个区块数据，准备复写
+            fwrite(&stu, sizeof(Student), 1, fpn);  // 复写数据
             printf("修改成功\n");
             Delay_ms(1000);
             fclose(fpn);
@@ -315,12 +328,175 @@ void fixName(int search_id)  //修改姓名
     }
 }
 
-void fixId(int search_id)
+void fixId(int search_id) // 修改学号
 {
+    Student stu;
+    int _id;
 
+    FILE *fpn = fopen("Database.bin", "rb+");
+    if (fpn == NULL)
+    {
+        perror("Error openning the file");
+        return;
+    }
+
+    printf("请输入新学号\n");
+
+label2:
+    while (1)
+    {
+        if (scanf("%d", &_id) != 1)
+        {
+            printf("非数值型输入，请重试\n");
+            clearInputBuff();
+            continue;
+        }
+        else
+        {
+            if (_id < 100000 || _id > 999999) // 判断用户输入的新学号是否为6位
+            {
+                printf("输入错误，请重试\n");
+                continue;
+            }
+            while (fread(&stu, sizeof(Student), 1, fpn) == 1) // 检查数据库中是否有与之重复的学号，若有则要用户重新输入。
+            {
+                if (_id == stu.Id)
+                {
+                    printf("该学号已存在，请重试\n");
+                    rewind(fpn); // 重置文件内部位置指示器
+                    goto label2;
+                }
+                if (_id != stu.Id && feof(fpn)) // 若无重名学号，跳出循环继续往下执行
+                {
+                    break;
+                }
+            }
+        }
+        break;
+    }
+
+    rewind(fpn);
+    while (fread(&stu, sizeof(Student), 1, fpn) == 1)
+    {
+        if (search_id != stu.Id)
+        {
+            continue;
+        }
+        if (search_id == stu.Id)
+        {
+            stu.Id = _id;
+            fseek(fpn, -sizeof(Student), SEEK_CUR); // 将指针重新指向上一个区块数据，准备复写
+            fwrite(&stu, sizeof(Student), 1, fpn);  // 复写数据
+            printf("修改成功\n");
+            Delay_ms(1000);
+            fclose(fpn);
+            return;
+        }
+    }
 }
 
-void fixMark(int search_id)
+void fixMark(int search_id) //修改三科成绩
 {
-    
+    Student stu;
+    int eng, chs, math;
+
+    FILE *fpn = fopen("Database.bin", "rb+");
+    if (fpn == NULL)
+    {
+        perror("Error openning the file");
+        return;
+    }
+
+    printf("请依次输入英语，语文，数学成绩\n");
+    while (1)
+    {
+        if (scanf("%d %d %d", &eng, &chs, &math) != 3)
+        {
+            printf("非数值型输入，请重试\n");
+            clearInputBuff();
+            continue;
+        }
+        break;
+    }
+
+    while (fread(&stu, sizeof(Student), 1, fpn) == 1)
+    {
+        if (search_id != stu.Id)
+        {
+            continue;
+        }
+        if (search_id == stu.Id)
+        {
+            stu.Marks.chinese_mark = chs;
+            stu.Marks.english_mark = eng;
+            stu.Marks.math_mark = math;
+
+            fseek(fpn, -sizeof(Student), SEEK_CUR); // 将指针重新指向上一个区块数据，准备复写
+            fwrite(&stu, sizeof(Student), 1, fpn);  // 复写数据
+            printf("修改成功\n");
+            Delay_ms(1000);
+            fclose(fpn);
+            return;
+        }
+    }
+}
+
+void searchStudentInfo() // 查询学生信息
+{
+    Student stu;
+    int _id;
+
+    system("cls");
+    while (1)
+    {
+        printf("请输入要查询学生的学号(按E退出)\n");
+        while (1)
+        {
+            if (scanf("%d", &_id) != 1)
+            {
+                char ch = getchar();
+                if (ch == 'E' || ch == 'e')
+                    return;
+                printf("非数值型输入，请重试\n");
+                Delay_ms(1000);
+                system("cls");
+                clearInputBuff();
+                continue;
+            }
+            else
+            {
+                if (_id < 100000 || _id > 999999)
+                {
+                    printf("输入错误，请重试\n");
+                    Delay_ms(1000);
+                    system("cls");
+                    continue;
+                }
+            }
+            break;
+        }
+
+        FILE *fpn = fopen("Database.bin", "rb");
+        while (fread(&stu, sizeof(Student), 1, fpn) == 1)
+        {
+            if (_id == stu.Id)
+            {
+                printf("找到该学生\n");
+                printf("Name:%s\n", stu.name);
+                printf("ID:%d\n", stu.Id);
+                printf("Math:%d    English:%d    Chinese:%d\n\n",
+                       stu.Marks.math_mark, stu.Marks.english_mark, stu.Marks.chinese_mark);
+                fclose(fpn);
+                break;
+            }
+        }
+        if (_id != stu.Id && feof(fpn))
+        {
+            printf("未找到该学生\n");
+            fclose(fpn);
+            Delay_ms(1000);
+            system("cls");
+            continue;
+        }
+    }
 }

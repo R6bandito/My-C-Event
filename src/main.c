@@ -28,7 +28,7 @@ int main(int argc,const char* argv[])
             case 1:addStudentInfo();system("cls");break;  //添加学生信息
             case 2:deleteStudentInfo();system("cls");break; //删除学生信息
             case 3:fixStudentInfo();system("cls");break; //修改学生信息
-            case 4:break;
+            case 4:searchStudentInfo();system("cls");break; //查询学生信息
             case 5:break;
             case 6:break;
             case 7:break;
