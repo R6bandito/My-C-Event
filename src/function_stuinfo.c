@@ -6,8 +6,10 @@
 #include "function.h"
 #include <windows.h>
 #include <process.h>
+#include <io.h>
 
 #define FILE_CANT_OPEN 3
+#define ARRAY 50
 
 
 void Delay_ms(unsigned int time) // 延时函数
@@ -24,7 +26,7 @@ void addStudentInfo() // 新增学生信息
     int _id;
     int maths, english, chinese;
 
-    FILE *fp = fopen("Database.bin", "ab");
+    FILE *fp = fopen("bin\\Database.bin", "ab");
     if (fp == NULL)
     {
         perror("Oops!Cant open the file\n");
@@ -102,7 +104,7 @@ void readStudentInfo() // 文件读取学生信息
     system("cls");
 
     Student stu;
-    FILE *fp = fopen("Database.bin", "rb"); // 以只读方式打开文件
+    FILE *fp = fopen("bin\\Database.bin", "rb"); // 以只读方式打开文件
     if (fp == NULL)
     {
         perror("Oops!Cant open the file\n");
@@ -127,13 +129,13 @@ void deleteStudentInfo() // 删除学生信息
     int temp_id;
     Student stu;
 
-    FILE *fp = fopen("Database.bin", "rb"); // 只读方式打开文件
+    FILE *fp = fopen("bin\\Database.bin", "rb"); // 只读方式打开文件
     if (fp == NULL)                         // 检测文件是否正确打开
     {
         perror("Oops!Cant open the file\n");
         exit(FILE_CANT_OPEN);
     }
-    FILE *fptem = fopen("Temp.bin", "wb"); // 只写方式打开文件
+    FILE *fptem = fopen("bin\\Temp.bin", "wb"); // 只写方式打开文件
     if (fptem == NULL)
     {
         perror("Oops!Cant open the file\n");
@@ -225,7 +227,7 @@ void fixStudentInfo() // 修改学生信息
     int i;
     char ch;
 
-    FILE *fp = fopen("Database.bin", "rb+"); // 读写方式打开文件
+    FILE *fp = fopen("bin\\Database.bin", "rb+"); // 读写方式打开文件
     if (fp == NULL)
     {
         perror("Error openning the file");
@@ -308,7 +310,7 @@ void fixName(int search_id) // 修改姓名
     Student stu;
     char _name[20];
 
-    FILE *fpn = fopen("Database.bin", "rb+");
+    FILE *fpn = fopen("bin\\Database.bin", "rb+");
     if (fpn == NULL)
     {
         perror("Error openning the file");
@@ -342,7 +344,7 @@ void fixId(int search_id) // 修改学号
     Student stu;
     int _id;
 
-    FILE *fpn = fopen("Database.bin", "rb+");
+    FILE *fpn = fopen("bin\\Database.bin", "rb+");
     if (fpn == NULL)
     {
         perror("Error openning the file");
@@ -411,7 +413,7 @@ void fixMark(int search_id) // 修改三科成绩
     Student stu;
     int eng, chs, math;
 
-    FILE *fpn = fopen("Database.bin", "rb+");
+    FILE *fpn = fopen("bin\\Database.bin", "rb+");
     if (fpn == NULL)
     {
         perror("Error openning the file");
@@ -489,7 +491,7 @@ void searchStudentInfo() // 查询学生信息
             break;
         }
 
-        FILE *fpn = fopen("Database.bin", "rb");
+        FILE *fpn = fopen("bin\\Database.bin", "rb");
         while (fread(&stu, sizeof(Student), 1, fpn) == 1)
         {
             if (_id == stu.Id)
@@ -521,7 +523,7 @@ void sum_Reverage_Marks() // 计算每位学生总成绩与平均成绩，并显
     int sum;
     int average;
 
-    FILE *fp = fopen("Database.bin", "rb");
+    FILE *fp = fopen("bin\\Database.bin", "rb");
     if (fp == NULL)
     {
         perror("Error opening the file");
@@ -532,6 +534,7 @@ void sum_Reverage_Marks() // 计算每位学生总成绩与平均成绩，并显
     if (fread(&stu, sizeof(Student), 1, fp) != 1 && feof(fp))
     {
         printf("数据库为空!\n");
+        Delay_ms(1000);
         fclose(fp);
         return;
     }
@@ -556,4 +559,108 @@ void sum_Reverage_Marks() // 计算每位学生总成绩与平均成绩，并显
     fclose(fp);
 
     system("pause");
+}
+
+void order_Studentinfo()    //根据学生成绩进行排序
+{
+    system("cls");
+
+    int rank = 1;
+    Student stu;
+    Student student[ARRAY];
+    int count = 0;
+
+    FILE *fp = fopen("bin\\Database.bin","rb");
+    if(fp == NULL)
+    {
+        perror("Error opening the file");
+        Delay_ms(1000);
+        return;
+    }
+
+    if(!fread(&stu,sizeof(Student),1,fp) && feof(fp))
+    {
+        printf("数据库为空!\n");
+        Delay_ms(1000);
+        return;
+    }
+    //重置文件内部位置指示器
+    rewind(fp);
+
+    while(fread(&stu,sizeof(Student),1,fp) == 1)
+    {
+        //计算出每个学生总分
+        stu.sum = (stu.Marks.chinese_mark+stu.Marks.english_mark+stu.Marks.math_mark);
+        //将读取的学生信息存入学生类数组
+        student[count++] = stu;
+    }
+    fclose(fp);
+
+    //冒泡排序法
+    for(int i=0;i<count-1;i++)
+    {
+        for(int j=0;j<count-i-1;j++)
+        {
+            if(student[j].sum<student[j+1].sum)
+            {
+                Student temp;
+                temp = student[j];
+                student[j] = student[j+1];
+                student[j+1] = temp;
+            }
+        }
+    }
+
+    //打印排行榜
+    for(int i=0;i<count;i++)
+    {
+        printf("总分:%d\t 排名:%d\t 姓名:%s\t 学号:%d\n",student[i].sum,rank++,student[i].name,student[i].Id);
+    }
+    system("pause");
+}
+
+void save_Profile() //文件保存
+{
+    clearInputBuff();
+    system("cls");
+    char filepath[200]; //文件保存路径
+    char filename[200]; //文件名
+    Student stu;
+
+    printf("请输入完整的文件保存的路径(例如:C:\\output\\):");
+    stringInput(filepath,sizeof(filepath));
+
+    if(_access(filepath,0) == 0){}
+    else{
+        printf("所选路径不存在");
+        Delay_ms(1000);
+        return;
+    }
+    printf("请输入文件名\n");
+    stringInput(filename,sizeof(filename));
+
+    strcat(filepath,filename);
+    FILE *fp = fopen(filepath,"wb");
+    if(fp == NULL)
+    {
+        perror("Error happened");
+        Delay_ms(1000);
+        return;
+    }
+    FILE *fpn = fopen("bin\\Database.bin","rb");
+    if(fpn == NULL)
+    {
+        perror("Error happened");
+        Delay_ms(1000);
+        return;
+    }
+
+    while(fread(&stu,sizeof(Student),1,fpn) == 1)
+    {
+        fwrite(&stu,sizeof(Student),1,fp);
+    }
+    printf("文件保存成功\n");
+    fclose(fp);
+    fclose(fpn);
+    Delay_ms(1000);
 }

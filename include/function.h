@@ -11,6 +11,7 @@ typedef struct Student{     //学生结构体
     int Id;     //学生学号
     char name[20];  //学生姓名
     Course Marks;   //学生三门课的成绩
+    int sum;    //学生总分
 }Student;
 
 
@@ -33,6 +34,10 @@ void fixId(int search_id);   //声明修改学号函数
 void fixMark(int search_id); //声明修改分数函数
 
 void sum_Reverage_Marks();  //声明平均成绩与总成绩函数
+
+void order_Studentinfo();   //声明按总成绩排序学生信息函数
+
+void save_Profile();    //声明保存到文件函数
 
 
 

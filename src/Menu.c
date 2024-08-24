@@ -10,7 +10,7 @@ void Menu_A() // 主菜单
     printf(" 3.修改学生信息\n");
     printf(" 4.查询学生信息\n");
     printf(" 5.总成绩和平均成绩\n");
-    printf(" 6.按成绩排序学生信息\n");
+    printf(" 6.按总成绩排序学生信息\n");
     printf(" 7.保存到文件\n");
     printf(" 8.从文件中读取学生信息\n");
     printf(" 9.退出系统\n");
