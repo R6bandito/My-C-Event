@@ -9,6 +9,7 @@
 
 #define FILE_CANT_OPEN 3
 
+
 void Delay_ms(unsigned int time) // 延时函数
 {
     Sleep(time);
@@ -16,6 +17,7 @@ void Delay_ms(unsigned int time) // 延时函数
 
 void addStudentInfo() // 新增学生信息
 {
+    system("cls");
     // 临时存储学生信息
     Student st;
     char _name[20];
@@ -33,6 +35,7 @@ void addStudentInfo() // 新增学生信息
     {
         while (1)
         {
+            system("cls");
             clearInputBuff();
             printf("请输入学生姓名(按E退出)\n");
             stringInput(_name, sizeof(_name));                              // 输入学生姓名
@@ -41,18 +44,22 @@ void addStudentInfo() // 新增学生信息
                 fclose(fp);
                 return; // 结束函数
             }
+
             while (1)
             {
+                system("cls");
                 printf("请输入学生学号(6位)\n");
                 if (scanf("%d", &_id) != 1)
                 {
                     printf("非数值型输入，请重试\n");
                     clearInputBuff(); // 清空输入缓冲区，防止死循环
+                    Delay_ms(1000);
                     continue;
                 }
                 if (_id < 100000 || _id > 999999) // 检查输入的学号是否为6位
                 {
                     printf("输入错误，请重试\n");
+                    Delay_ms(1000);
                     clearInputBuff();
                     continue;
                 }
@@ -60,6 +67,7 @@ void addStudentInfo() // 新增学生信息
             }
             while (1)
             {
+                system("cls");
                 clearInputBuff();
                 printf("请输入学生三门课目成绩(语数英)\n");
                 if (scanf("%d %d %d", &chinese, &maths, &english) != 3)
@@ -84,12 +92,15 @@ void addStudentInfo() // 新增学生信息
                 return;
             }
             printf("Successfully write\n\n");
+            Delay_ms(1000);
         }
     }
 }
 
 void readStudentInfo() // 文件读取学生信息
 {
+    system("cls");
+
     Student stu;
     FILE *fp = fopen("Database.bin", "rb"); // 以只读方式打开文件
     if (fp == NULL)
@@ -107,16 +118,8 @@ void readStudentInfo() // 文件读取学生信息
     }
     fclose(fp);       // 读取操作结束，关闭文件
     clearInputBuff(); // 清空输入缓冲区
-    while (1)
-    {
-        printf("按E退回\n");
-        char ch[5];
-        stringInput(ch, sizeof(ch));
-        if ((ch[0] == 'e' || ch[0] == 'E') && strlen(ch) == 1)
-        {
-            return; // 终止函数
-        }
-    }
+    
+    system("pause");
 }
 
 void deleteStudentInfo() // 删除学生信息
@@ -150,6 +153,7 @@ void deleteStudentInfo() // 删除学生信息
     {
         while (1)
         {
+            system("cls");
             printf("请输入要删除的学生学号(6位)\n");
             if (scanf("%d", &temp_id) == 1)
             {
@@ -164,18 +168,21 @@ void deleteStudentInfo() // 删除学生信息
                         }
                     }
                     printf("未找到该学生，请重试\n"); // 学生未找到，重新回到输入
+                    Delay_ms(1000);
                     fseek(fp, 0, SEEK_SET);           // 重置文件指针
                     continue;
                 }
                 else
                 {
                     printf("输入错误，请重试\n");
+                    Delay_ms(1000);
                     continue;
                 }
             }
             else
             {
                 printf("非数值型输入，请重试\n");
+                Delay_ms(1000);
                 clearInputBuff(); // 清空缓冲区
                 continue;
             }
@@ -248,13 +255,15 @@ label:
                     return; // 检查用户输入E，并作出响应
                 printf("非数值型输入，请重试\n");
                 clearInputBuff();
-                continue;
+                Delay_ms(1000);
+                goto label;
             }
             if (search_id < 100000 || search_id > 999999) // 若输入的学号非6位
             {
                 printf("输入错误，请重试\n");
                 clearInputBuff();
-                continue;
+                Delay_ms(1000);
+                goto label;
             }
             break;
         }
@@ -340,15 +349,16 @@ void fixId(int search_id) // 修改学号
         return;
     }
 
-    printf("请输入新学号\n");
-
 label2:
     while (1)
     {
+        system("cls");
+        printf("请输入新学号\n");
         if (scanf("%d", &_id) != 1)
         {
             printf("非数值型输入，请重试\n");
             clearInputBuff();
+            Delay_ms(1000);
             continue;
         }
         else
@@ -356,6 +366,7 @@ label2:
             if (_id < 100000 || _id > 999999) // 判断用户输入的新学号是否为6位
             {
                 printf("输入错误，请重试\n");
+                Delay_ms(1000);
                 continue;
             }
             while (fread(&stu, sizeof(Student), 1, fpn) == 1) // 检查数据库中是否有与之重复的学号，若有则要用户重新输入。
@@ -395,7 +406,7 @@ label2:
     }
 }
 
-void fixMark(int search_id) //修改三科成绩
+void fixMark(int search_id) // 修改三科成绩
 {
     Student stu;
     int eng, chs, math;
@@ -407,13 +418,15 @@ void fixMark(int search_id) //修改三科成绩
         return;
     }
 
-    printf("请依次输入英语，语文，数学成绩\n");
     while (1)
     {
+        system("cls");
+        printf("请依次输入英语，语文，数学成绩\n");
         if (scanf("%d %d %d", &eng, &chs, &math) != 3)
         {
             printf("非数值型输入，请重试\n");
             clearInputBuff();
+            Delay_ms(1000);
             continue;
         }
         break;
@@ -499,4 +512,48 @@ void searchStudentInfo() // 查询学生信息
             continue;
         }
     }
+}
+
+void sum_Reverage_Marks() // 计算每位学生总成绩与平均成绩，并显示
+{
+    system("cls");
+    Student stu;
+    int sum;
+    int average;
+
+    FILE *fp = fopen("Database.bin", "rb");
+    if (fp == NULL)
+    {
+        perror("Error opening the file");
+        Delay_ms(1000);
+        return;
+    }
+
+    if (fread(&stu, sizeof(Student), 1, fp) != 1 && feof(fp))
+    {
+        printf("数据库为空!\n");
+        fclose(fp);
+        return;
+    }
+    //重置内部文件位置指示器
+    rewind(fp);
+
+    while (fread(&stu, sizeof(Student), 1, fp) == 1)
+    {
+        // 计算总分
+        sum = (stu.Marks.chinese_mark + stu.Marks.english_mark + stu.Marks.math_mark);
+        // 计算均分
+        average = sum / 3;
+
+        printf("姓名:%s\n", stu.name);
+        printf("学号:%d\n", stu.Id);
+        printf("总分:%d\n", sum);
+        printf("平均分:%d\n\n", average);
+
+        sum = 0;
+        average = 0;
+    }
+    fclose(fp);
+
+    system("pause");
 }
