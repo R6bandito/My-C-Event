@@ -14,8 +14,9 @@ void error_input_cope()
 
 void clearInput()/*Bug*/
 {
-    //回到光标位置
+    //回到保存的光标位置
     accessMouse();
+    printf("\033[1C");
     //输出一个退格
     printf("\b \b");
 }
@@ -56,6 +57,8 @@ char input_data()
                 printf("\033[2B\033[G");
                 error_input_cope();
                 clearInput();
+                //重置count
+                count = 0;
                 continue;
             }
             break;
