@@ -9,6 +9,8 @@
 
 #define __ANSI_CUR_SAVE()     std::cout<<"\033[s";
 
+#define __ANSI_CUR_GET()        std::cout<<"\033[u";
+
 #define __ANSI_CUR_ENABLE()     std::cout<<"\033[?25h";
 
 #define __ANSI_CUR_DISABLE()    std::cout<<"\033[?25l";

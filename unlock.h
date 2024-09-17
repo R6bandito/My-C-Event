@@ -7,7 +7,10 @@
 #include <chrono>
 #include "error.h"
 
+#define PERMISSION_CONFIRM  1
+#define PERMISSION_DENY 0
+
 //客户端解锁界面
-void display_unlock_menu();
+size_t display_unlock_menu();
 
 #endif //UNLOCK_h
