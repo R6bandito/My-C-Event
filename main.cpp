@@ -2,6 +2,7 @@
 #include "unlock.h"
 #include <windows.h>
 #include "Menu.h"
+#include "Staff.h"
 
 void setConsoleOutputType()
 {
@@ -21,6 +22,7 @@ int main(int argc,const char* argv[])
             switch(parameter)
             {
                 case '0':exit(EXIT_SUCCESS);
+                case '1':
             }
         }
     }

@@ -13,4 +13,6 @@
 //客户端解锁界面
 size_t display_unlock_menu();
 
+void delay_sec(size_t time_sec);
+
 #endif //UNLOCK_h
