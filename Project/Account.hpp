@@ -11,17 +11,16 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
+#include <algorithm>
 
 class Account {	//Bank account category
 
 public:
 	std::string name;	//Card holder's name
 	std::string password;	//password
-	uint32_t id;		//ID Num
+	uint64_t id;		//ID Num
 	double balance;		
 	std::stack<std::string> logs;	//History of transactions
-
-	Account(const Account&) = delete;	//Prohibit copy
 
 	Account& operator=(const Account&) = delete; //Prohibit copy
 
